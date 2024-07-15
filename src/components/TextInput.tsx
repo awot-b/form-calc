@@ -3,12 +3,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
 import { useQuery } from 'react-query';
 import { useStore } from '../store/store'; // Adjust the path as per your project structure
 import { AutocompleteItem } from '../store/types';
 import { calculate } from '../utils';
-import { Button } from '@mui/material';
 
 export const isOperand = (value: string): boolean => {
   const operandsRegex = /[+\-*^/]/; 
