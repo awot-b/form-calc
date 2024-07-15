@@ -22,10 +22,11 @@ const fetchAllSuggestions = async () => {
 };
 
 const TextInput: React.FC<{ label: string }> = () => {
-  const { addTag, tags, deleteLastTag } = useStore();
+  const { addTag, tags, deleteLastTag, toggleEditMode } = useStore();
   const [inputValue, setInputValue] = useState('');
   const [reloadAutoComplete, setReloadAutoComplete] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null); // 
+  const [replacingInputValue, setReplacingInputValue] = useState('');
   
   const { data, isLoading } = useQuery('autocompleteAll', fetchAllSuggestions);
 
@@ -60,8 +61,19 @@ const TextInput: React.FC<{ label: string }> = () => {
   return (
     <div className='flex flex-col space-y-2'>
  
- <div className='w-full items-center flex  border-2 p-4 rounded' key={reloadAutoComplete? 1:2}>
-        <div className='flex'>{tags.map(tag=> isOperand(tag.content)? tag.content: <p className='bg-gray-200 whitespace-nowrap py-0 p-1'>{`${tag.content}   `} </p>)}</div>
+ <div className='w-fit items-center flex  border-2 p-4 rounded' key={reloadAutoComplete? 1:2}>
+        <div className='flex'>{tags.map(tag=> isOperand(tag.content)? tag.content: 
+          
+          <p className='bg-gray-200 whitespace-nowrap py-0 p-1 flex items-center'>{`${tag.content}   `}
+          {tag.editMode ? (
+                <input type="text" value={replacingInputValue} className='w-[70px] ml-2' onChange={(e)=> setReplacingInputValue(e.target.value)} onKeyDown={e=> {if (e.key === 'Enter') {
+                  toggleEditMode(tag.id, replacingInputValue)
+                  setReplacingInputValue('')
+              }}}/>
+            ) : (
+              <button className='ml-2 border border-t-0 border-b-0 border-gray-400' onClick={(e)=> toggleEditMode(tag.id)}>{tag.xReplacedby !== '' ? tag.xReplacedby: 'X'}</button>
+            )}
+           </p>)}</div>
           <div className='w-[200px]'>
             <Autocomplete
               freeSolo
